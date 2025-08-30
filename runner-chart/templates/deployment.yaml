@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tenant-api
+  namespace: {{ .Values.tenant | quote }}
+  labels:
+    app: tenant-api
+    tenant: {{ .Values.tenant | quote }}
+spec:
+  replicas: {{ .Values.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: tenant-api
+      tenant: {{ .Values.tenant | quote }}
+  template:
+    metadata:
+      labels:
+        app: tenant-api
+        tenant: {{ .Values.tenant | quote }}
+    spec:
+      {{- if or .Values.serviceAccount.create .Values.serviceAccount.name }}
+      serviceAccountName: {{ default "tenant-api" .Values.serviceAccount.name }}
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.imagePullSecrets }}
+        - name: {{ .name }}
+      {{- end }}
+      {{- end }}
+      containers:
+        - name: app
+          image: {{ .Values.image | quote }}
+          {{- if .Values.envFromSecrets }}
+          envFrom:
+          {{- range .Values.envFromSecrets }}
+            - secretRef:
+                name: {{ . }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.env }}
+          env:
+          {{- range .Values.env }}
+            - name: {{ .name }}
+              {{- if .value }}
+              value: {{ .value | quote }}
+              {{- else if .valueFrom }}
+              valueFrom:
+{{ toYaml .valueFrom | indent 16 }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
+          ports:
+            - containerPort: 8080

@@ -1,0 +1,24 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+!*.tfvars.example
+
+# AWS Credentials
+.aws/
+.aws
+*.pem
+*.key
+
+# Helm/Kubernetes
+values.yaml
+values.yaml.tmp
+values.yaml.generated
+*-secret.yaml
+
+# Common OS/Editor
+.DS_Store
+.vscode/
+*.log
+*.tmp

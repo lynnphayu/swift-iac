@@ -1,0 +1,18 @@
+apiVersion: http.keda.sh/v1alpha1
+kind: HTTPScaledObject
+metadata:
+  name: tenant-api-http
+  namespace: {{ .Values.tenant | quote }}
+spec:
+  hosts:
+    - "tenant-{{ .Values.tenant }}.svc.cluster.local"
+  scaleTargetRef:
+    name: tenant-api
+    service: tenant-api
+    kind: Deployment
+    port: 80
+  replicas:
+    min: 0
+    max: {{ .Values.maxReplicas }}
+  scaledownPeriod: {{ .Values.scaledownPeriod }}
+  targetPendingRequests: {{ .Values.targetPendingRequests }}
