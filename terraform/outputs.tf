@@ -96,11 +96,7 @@ output "rds_secrets_manager_secret_arn" {
   value       = module.rds.secrets_manager_secret_arn
 }
 
-output "kubernetes_secret_manifest" {
-  description = "Kubernetes secret manifest for database connection"
-  value       = module.rds.kubernetes_secret_manifest
-  sensitive   = true
-}
+
 
 # =============================================================================
 # DOCUMENTDB OUTPUTS
@@ -148,11 +144,7 @@ output "documentdb_secrets_manager_secret_arn" {
   value       = module.documentdb.secrets_manager_secret_arn
 }
 
-output "documentdb_kubernetes_secret_manifest" {
-  description = "Kubernetes secret manifest for DocumentDB connection"
-  value       = module.documentdb.kubernetes_secret_manifest
-  sensitive   = true
-}
+
 
 output "documentdb_ssl_certificate_info" {
   description = "Information about SSL certificate for DocumentDB"

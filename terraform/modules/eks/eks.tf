@@ -23,11 +23,10 @@ module "eks" {
   eks_managed_node_groups = {
     default = {
       instance_types = ["t2.small"]
-      desired_size   = 1
+      desired_size   = 2
       min_size       = 0
-      max_size       = 1
+      max_size       = 2
 
-      # Use custom ECR pull role for node groups
       create_iam_role = false
       iam_role_arn    = data.aws_iam_role.eks_ecr_pull_role.arn
     }

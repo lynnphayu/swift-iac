@@ -31,12 +31,13 @@ resource "aws_secretsmanager_secret" "db_password" {
 resource "aws_secretsmanager_secret_version" "db_password" {
   secret_id = aws_secretsmanager_secret.db_password.id
   secret_string = jsonencode({
-    username = var.master_username
-    password = random_password.db_password.result
-    engine   = var.engine
-    host     = aws_rds_cluster.aurora.endpoint
-    port     = aws_rds_cluster.aurora.port
-    dbname   = var.database_name
+    username          = var.master_username
+    password          = random_password.db_password.result
+    engine            = var.engine
+    host              = aws_rds_cluster.aurora.endpoint
+    port              = aws_rds_cluster.aurora.port
+    dbname            = var.database_name
+    connection_string = "postgresql://${var.master_username}:${urlencode(random_password.db_password.result)}@${aws_rds_cluster.aurora.endpoint}:${aws_rds_cluster.aurora.port}/${var.database_name}"
   })
 }
 

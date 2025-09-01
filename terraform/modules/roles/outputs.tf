@@ -58,3 +58,17 @@ output "oidc_provider_arn" {
   description = "[DEPRECATED] Use github_oidc_provider_arn instead"
   value       = aws_iam_openid_connect_provider.github.arn
 }
+
+# =============================================================================
+# EXTERNAL SECRETS OPERATOR OUTPUTS
+# =============================================================================
+
+output "external_secrets_role_arn" {
+  description = "IAM role ARN for External Secrets Operator"
+  value       = aws_iam_role.external_secrets.arn
+}
+
+output "external_secrets_role_name" {
+  description = "IAM role name for External Secrets Operator"
+  value       = aws_iam_role.external_secrets.name
+}

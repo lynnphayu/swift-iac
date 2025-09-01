@@ -3,8 +3,9 @@
 # =============================================================================
 
 resource "random_password" "docdb_password" {
-  length  = 16
-  special = true
+  length           = 16
+  special          = true
+  override_special = "!#$%&*+-=?^_`{|}~"
 }
 
 # =============================================================================
@@ -22,8 +23,12 @@ resource "aws_secretsmanager_secret" "docdb_password" {
 resource "aws_secretsmanager_secret_version" "docdb_password" {
   secret_id = aws_secretsmanager_secret.docdb_password.id
   secret_string = jsonencode({
-    username = var.master_username
-    password = random_password.docdb_password.result
+    username          = var.master_username
+    password          = random_password.docdb_password.result
+    host              = aws_docdb_cluster.docdb.endpoint
+    port              = aws_docdb_cluster.docdb.port
+    database          = "admin"
+    connection_string = "mongodb://${var.master_username}:${urlencode(random_password.docdb_password.result)}@${aws_docdb_cluster.docdb.endpoint}:${aws_docdb_cluster.docdb.port}/?ssl=true&tlsInsecure=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
   })
 }
 

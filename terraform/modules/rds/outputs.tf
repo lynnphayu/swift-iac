@@ -105,27 +105,7 @@ output "connection_string" {
 }
 
 # =============================================================================
-# KUBERNETES SECRET MANIFEST
+# EXTERNAL SECRETS INTEGRATION
 # =============================================================================
 
-output "kubernetes_secret_manifest" {
-  description = "Kubernetes secret manifest for database connection"
-  value = base64encode(yamlencode({
-    apiVersion = "v1"
-    kind       = "Secret"
-    metadata = {
-      name      = "postgres-connection"
-      namespace = "default"
-    }
-    type = "Opaque"
-    data = {
-      DATABASE_URL = base64encode("postgresql://${aws_rds_cluster.aurora.master_username}:${random_password.db_password.result}@${aws_rds_cluster.aurora.endpoint}:${aws_rds_cluster.aurora.port}/${aws_rds_cluster.aurora.database_name}")
-      DB_HOST      = base64encode(aws_rds_cluster.aurora.endpoint)
-      DB_PORT      = base64encode(tostring(aws_rds_cluster.aurora.port))
-      DB_NAME      = base64encode(aws_rds_cluster.aurora.database_name)
-      DB_USERNAME  = base64encode(aws_rds_cluster.aurora.master_username)
-      DB_PASSWORD  = base64encode(random_password.db_password.result)
-    }
-  }))
-  sensitive = true
-}
+

@@ -69,3 +69,8 @@ output "cluster_name" {
   description = "Name of the EKS cluster"
   value       = var.cluster_name
 }
+
+output "oidc_issuer_id" {
+  description = "OIDC issuer ID for the EKS cluster (without https://)"
+  value       = replace(module.eks.cluster_oidc_issuer_url, "https://", "")
+}

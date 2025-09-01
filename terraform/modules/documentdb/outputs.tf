@@ -111,32 +111,10 @@ output "cluster_instance_endpoints" {
 }
 
 # =============================================================================
-# KUBERNETES SECRET MANIFEST
+# EXTERNAL SECRETS INTEGRATION
 # =============================================================================
 
-output "kubernetes_secret_manifest" {
-  description = "Kubernetes secret manifest for DocumentDB connection"
-  value = base64encode(yamlencode({
-    apiVersion = "v1"
-    kind       = "Secret"
-    metadata = {
-      name      = "documentdb-connection"
-      namespace = "default" # Or specify a variable for namespace
-    }
-    type = "Opaque"
-    data = {
-      DOCUMENTDB_CONNECTION_STRING = base64encode(
-        "mongodb://${var.master_username}:${random_password.docdb_password.result}@${aws_docdb_cluster.docdb.endpoint}:${aws_docdb_cluster.docdb.port}/?ssl=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false"
-      )
-      DOCUMENTDB_HOST     = base64encode(aws_docdb_cluster.docdb.endpoint)
-      DOCUMENTDB_PORT     = base64encode(tostring(aws_docdb_cluster.docdb.port))
-      DOCUMENTDB_USERNAME = base64encode(var.master_username)
-      DOCUMENTDB_PASSWORD = base64encode(random_password.docdb_password.result)
-      DOCUMENTDB_DATABASE = base64encode("admin") # DocumentDB default database
-    }
-  }))
-  sensitive = true
-}
+
 
 # =============================================================================
 # SSL CERTIFICATE INFORMATION

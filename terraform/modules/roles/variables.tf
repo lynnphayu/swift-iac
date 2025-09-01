@@ -8,6 +8,24 @@ variable "region" {
   default     = "ap-southeast-1"
 }
 
+variable "project_name" {
+  description = "Project name for resource naming"
+  type        = string
+  default     = "dag-swarm"
+}
+
+variable "environment" {
+  description = "Environment name (dev, staging, prod)"
+  type        = string
+  default     = "dev"
+}
+
+variable "eks_oidc_issuer_id" {
+  description = "EKS OIDC issuer ID (without https://)"
+  type        = string
+  default     = ""
+}
+
 variable "ecr_repository_name" {
   description = "ECR repository name to allow push/pull"
   type        = string
