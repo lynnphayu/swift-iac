@@ -11,14 +11,11 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.region
-}
-
 # Shared data sources
 data "aws_caller_identity" "current" {}
 
 # Shared locals used across multiple files
 locals {
-  ecr_repo_arn = "arn:aws:ecr:${var.region}:${data.aws_caller_identity.current.account_id}:repository/${var.ecr_repository_name}"
+  # Use ECR output if provided, otherwise construct from repository name (for backward compatibility)
+  ecr_repo_arn = var.ecr_repository_arn
 }

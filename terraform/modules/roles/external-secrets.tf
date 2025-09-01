@@ -4,7 +4,8 @@
 
 # IAM role for External Secrets Operator to access AWS Secrets Manager
 resource "aws_iam_role" "external_secrets" {
-  name = "external-secrets-operator"
+  count = var.eks_oidc_issuer_id != null ? 1 : 0
+  name  = "external-secrets-operator"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -35,6 +36,7 @@ resource "aws_iam_role" "external_secrets" {
 
 # IAM policy for accessing Secrets Manager
 resource "aws_iam_policy" "external_secrets_secrets_manager" {
+  count       = var.eks_oidc_issuer_id != "" ? 1 : 0
   name        = "external-secrets-secrets-manager-policy"
   description = "Policy for External Secrets Operator to access Secrets Manager"
 
@@ -57,6 +59,7 @@ resource "aws_iam_policy" "external_secrets_secrets_manager" {
 
 # Attach the policy to the role
 resource "aws_iam_role_policy_attachment" "external_secrets_secrets_manager" {
-  policy_arn = aws_iam_policy.external_secrets_secrets_manager.arn
-  role       = aws_iam_role.external_secrets.name
+  count      = var.eks_oidc_issuer_id != "" ? 1 : 0
+  policy_arn = aws_iam_policy.external_secrets_secrets_manager[0].arn
+  role       = aws_iam_role.external_secrets[0].name
 }

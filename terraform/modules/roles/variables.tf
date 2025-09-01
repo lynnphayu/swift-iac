@@ -27,8 +27,21 @@ variable "eks_oidc_issuer_id" {
 }
 
 variable "ecr_repository_name" {
-  description = "ECR repository name to allow push/pull"
+  description = "ECR repository name to allow push/pull (deprecated - use ecr_repository_arn)"
   type        = string
+  default     = null
+}
+
+variable "ecr_repository_arn" {
+  description = "ECR repository ARN from ECR module output"
+  type        = string
+  default     = null
+}
+
+variable "ecr_repository_url" {
+  description = "ECR repository URL from ECR module output"
+  type        = string
+  default     = null
 }
 
 # =============================================================================
@@ -77,11 +90,6 @@ variable "k8s_ecr_pull_role_name" {
   default     = "k8s-ecr-pull-role"
 }
 
-variable "k8s_allow_ec2_assume" {
-  description = "Allow EC2 instances to assume the K8s ECR pull role (for self-managed K8s on EC2)"
-  type        = bool
-  default     = true
-}
 
 variable "k8s_oidc_provider_arn" {
   description = "OIDC provider ARN for K8s service account integration (leave empty if not using OIDC)"
@@ -111,10 +119,4 @@ variable "k8s_trusted_arns" {
   description = "List of AWS ARNs (accounts/roles/users) that can assume this role"
   type        = list(string)
   default     = []
-}
-
-variable "k8s_allow_local_development" {
-  description = "Allow any identity in the current AWS account to assume this role (useful for local development)"
-  type        = bool
-  default     = false
 }

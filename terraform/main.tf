@@ -2,12 +2,46 @@
 # DAG SWARM INFRASTRUCTURE
 # =============================================================================
 
-# First create IAM roles - other modules depend on these
+# First create ECR repositories - roles module depends on these
+module "ecr" {
+  source = "./modules/ecr"
+
+  # Core configuration
+  repository_name = var.ecr_repository_name
+  region          = var.region
+  environment     = var.environment
+  project_name    = var.project_name
+
+  # ECR configuration
+  image_tag_mutability = "MUTABLE"
+  force_delete         = var.environment == "dev" ? true : false
+  scan_on_push         = true
+
+  # Lifecycle policy
+  enable_lifecycle_policy    = true
+  max_image_count            = var.environment == "prod" ? 20 : 10
+  untagged_image_expiry_days = 1
+
+  # Common tags
+  common_tags = {
+    Environment = var.environment
+    Project     = var.project_name
+    ManagedBy   = "terraform"
+  }
+}
+
+# Create IAM roles - depends on ECR
 module "roles" {
   source = "./modules/roles"
 
   # Shared variables
-  region              = var.region
+  region = var.region
+
+  # ECR integration - use outputs from ECR module
+  ecr_repository_arn = module.ecr.repository_arn
+  ecr_repository_url = module.ecr.repository_url
+
+  # Backward compatibility (remove once fully migrated)
   ecr_repository_name = var.ecr_repository_name
 
   # GitHub Actions variables
@@ -20,9 +54,12 @@ module "roles" {
   eks_ecr_pull_role_name = var.eks_ecr_pull_role_name
   k8s_ecr_pull_role_name = var.k8s_ecr_pull_role_name
 
-  # Local development settings
-  k8s_allow_local_development = var.k8s_allow_local_development
-  k8s_allow_ec2_assume        = var.k8s_allow_ec2_assume
+  # External Secrets Operator role configuration (will be created separately to avoid circular dependency)
+  project_name       = var.project_name
+  environment        = var.environment
+  eks_oidc_issuer_id = "" # Will be set later to avoid circular dependency
+
+  depends_on = [module.ecr]
 }
 
 # Create EKS cluster - depends on roles

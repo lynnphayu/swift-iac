@@ -158,19 +158,3 @@ variable "documentdb_instance_count" {
   type        = number
   default     = 1
 }
-
-# =============================================================================
-# OPTIONAL LOCAL DEVELOPMENT VARIABLES
-# =============================================================================
-
-variable "k8s_allow_local_development" {
-  description = "Allow any identity in the current AWS account to assume this role (useful for local development)"
-  type        = bool
-  default     = false
-}
-
-variable "k8s_allow_ec2_assume" {
-  description = "Allow EC2 instances to assume the K8s ECR pull role (for self-managed K8s on EC2)"
-  type        = bool
-  default     = false
-}

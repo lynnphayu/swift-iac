@@ -1,4 +1,34 @@
 # =============================================================================
+# ECR OUTPUTS
+# =============================================================================
+
+output "ecr_repository_url" {
+  description = "URL of the main ECR repository"
+  value       = module.ecr.repository_url
+}
+
+output "ecr_repository_name" {
+  description = "Name of the main ECR repository"
+  value       = module.ecr.repository_name
+}
+
+output "ecr_registry_id" {
+  description = "ECR registry ID"
+  value       = module.ecr.registry_id
+}
+
+output "docker_login_command" {
+  description = "Command to authenticate Docker with ECR"
+  value       = module.ecr.docker_login_command
+  sensitive   = false
+}
+
+output "ecr_image_uri_template" {
+  description = "Template for ECR image URI (replace {tag} with actual tag)"
+  value       = module.ecr.image_uri_template
+}
+
+# =============================================================================
 # IAM ROLES OUTPUTS
 # =============================================================================
 
@@ -12,10 +42,7 @@ output "eks_ecr_pull_role_arn" {
   value       = module.roles.eks_ecr_pull_role_arn
 }
 
-output "k8s_ecr_pull_role_arn" {
-  description = "K8s ECR pull IAM role ARN"
-  value       = module.roles.k8s_ecr_pull_role_arn
-}
+
 
 # =============================================================================
 # EKS CLUSTER OUTPUTS

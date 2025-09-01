@@ -32,20 +32,6 @@ output "eks_ecr_pull_role_name" {
 }
 
 # =============================================================================
-# NON-EKS KUBERNETES ECR PULL OUTPUTS
-# =============================================================================
-
-output "k8s_ecr_pull_role_arn" {
-  description = "IAM role ARN for non-EKS Kubernetes cluster to pull images from ECR"
-  value       = aws_iam_role.k8s_ecr_pull_role.arn
-}
-
-output "k8s_ecr_pull_role_name" {
-  description = "IAM role name for non-EKS Kubernetes cluster to pull images from ECR"
-  value       = aws_iam_role.k8s_ecr_pull_role.name
-}
-
-# =============================================================================
 # BACKWARD COMPATIBILITY OUTPUTS (deprecated but kept for compatibility)
 # =============================================================================
 
@@ -65,10 +51,10 @@ output "oidc_provider_arn" {
 
 output "external_secrets_role_arn" {
   description = "IAM role ARN for External Secrets Operator"
-  value       = aws_iam_role.external_secrets.arn
+  value       = var.eks_oidc_issuer_id != "" ? aws_iam_role.external_secrets[0].arn : null
 }
 
 output "external_secrets_role_name" {
   description = "IAM role name for External Secrets Operator"
-  value       = aws_iam_role.external_secrets.name
+  value       = var.eks_oidc_issuer_id != "" ? aws_iam_role.external_secrets[0].name : null
 }
